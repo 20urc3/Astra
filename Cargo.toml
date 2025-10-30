@@ -1,7 +1,29 @@
-[package]
-name = "ASTRA"
-version = "0.1.0"
-edition = "2024"
+[workspace] 
+resolder = "2"
+members = [
+    "crates/astra",
+    "crates/astra-coverage",
+]
 
-[dependencies]
+default-members = [
+    "crates/astra",
+    "crates/astra-coverage",
+]
+
+[workspace.package]
+name = "Astra"
+version = "0.0.1"
+edition = "2024"
+license = "MIT"
+readme = "./README.md"
+authors = ["Salim Largo <me@2ourc3.com>"]
+
+
+[workspace.dependencies]
 ratatui = "0.29.0"
+
+[profile.release]
+lto = true
+codegen-units = 1
+opt-level = 3
+debug = true

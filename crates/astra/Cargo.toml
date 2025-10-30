@@ -1,0 +1,7 @@
+[package]
+name = "astra"
+version = "0.0.1"
+authors = ["Salim Largo <me@2ourc3.com>"]
+
+
+[dependencies]
