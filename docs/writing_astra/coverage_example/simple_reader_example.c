@@ -17,14 +17,14 @@ int main(int argc, char **argv) {
 
     // Check if we receive an input
     if (argc != 2 || strlen(argv[1]) < 1) {
-        fprintf(stderr, "The program failed to receive input.\n");
+        //fprintf(stderr, "The program failed to receive input.\n");
     }
 
     // Read file received from user into a buffer
     FILE *fileptr;
     fileptr = fopen(argv[1], "r");
     if (fileptr == NULL) {
-        fprintf(stderr, "The file is empty.\n");
+        //fprintf(stderr, "The file is empty.\n");
         return 1;
     }
 

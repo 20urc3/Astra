@@ -3,24 +3,25 @@ use astra_linker::*;
 use astra_observer::shm::*;
 
 use clap::Parser;
-use std::io::{Read, Write};
+use std::os::fd::AsRawFd;
+use std::process::Command;
 
 fn main() {
     let args = Args::parse();
     println!("You passed the program to test: {:?}", args.program);
     println!("Attempting to link the target program with astra_sancov library");
-    
+
     linking_target_to_sancov(args.program);
 
-    let fd = create_shared_memory();
-    let mut child = std::process::Command::new("/home/s0urc3/Dev/Astra/a.out")
-        .stdin(std::process::Stdio::piped())
+    let (fd, ptr, shm_id) = create_shared_memory();
+    let fdsc = fd.as_raw_fd();
+
+    let mut child = Command::new("/home/s0urc3/Dev/Astra/a.out")
+        .env("SHM_FD", fdsc.to_string())
         .spawn()
         .expect("failed to run child process");
 
-    let mut child_input = child.stdin.take().unwrap();
-    let fd_b = fd.to_ne_bytes();
-    let _ = child_input.write_all(&fd_b);
+    child.wait().expect("child failed");
 
-
+    clean_shared_memory(ptr, shm_id.as_str());
 }
