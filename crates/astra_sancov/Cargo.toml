@@ -1,0 +1,13 @@
+[package]
+name = "astra_sancov"
+version = "0.0.1"
+authors = ["Salim Largo <me@2ourc3.com>"]
+edition = "2024"
+
+[dependencies]
+astra_observer = { path = "../astra_observer" }
+ctor = "0.6.0"
+libc = "0.2.177"
+
+[lib]
+crate-type = ["staticlib"]

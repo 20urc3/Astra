@@ -1,13 +1,20 @@
 [workspace] 
-resolder = "2"
+resolver = "2"
 members = [
     "crates/astra",
-    "crates/astra-coverage",
+    "crates/astra_cli", 
+    "crates/astra_sancov",
+    "crates/astra_linker", 
+    "crates/astra_observer",
 ]
 
 default-members = [
     "crates/astra",
-    "crates/astra-coverage",
+    "crates/astra_cli",
+    "crates/astra_sancov",
+    "crates/astra_linker",
+    "crates/astra_observer",
+    
 ]
 
 [workspace.package]
@@ -20,7 +27,11 @@ authors = ["Salim Largo <me@2ourc3.com>"]
 
 
 [workspace.dependencies]
-ratatui = "0.29.0"
+astra = { path = "./crates/astra" }
+astra_cli = { path = "./crates/astra_cli" }
+astra_sancov = { path = "./crates/astra_sancov" }
+astra_linker = { path = "./crates/astra_linker" }
+astra_observer = { path = "./crates/astra_observer" }
 
 [profile.release]
 lto = true
