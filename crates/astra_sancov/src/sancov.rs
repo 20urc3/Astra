@@ -1,5 +1,4 @@
 use astra_observer::shm::*;
-use ctor::ctor;
 use std::ptr::null_mut;
 use libc::c_void;
 use rustix::{
@@ -18,9 +17,11 @@ use rustix::{
 static mut SHM_PTR: *mut c_void = std::ptr::null_mut();
 const MAP_SIZE: usize = 262_144;
 
-#[ctor]
-fn init_shm (){
-    println!("Initialization of shared memory.");
+
+#[unsafe(no_mangle)]
+pub extern "C" fn __sanitizer_cov_trace_pc_guard_init(start: *mut u32, stop: *mut u32) -> () {
+    println!("START: {:?}", start);
+    println!("STOP: {:?}", stop);
     let shm_id = "/astra_shm";
     let fd = shm::open(
         shm_id,
@@ -40,13 +41,6 @@ fn init_shm (){
     };
 
     unsafe { SHM_PTR = ptr; }
-}
-
-
-#[unsafe(no_mangle)]
-pub extern "C" fn __sanitizer_cov_trace_pc_guard_init(start: *mut u32, stop: *mut u32) -> () {
-    println!("START: {:?}", start);
-    println!("STOP: {:?}", stop);
 }
 
 #[unsafe(no_mangle)]
