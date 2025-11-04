@@ -45,6 +45,10 @@ int main(int argc, char **argv) {
     if (buffer[0] == 'C') {
         fn_c();
     }
+
+    if (buffer[1] == 'A') {
+        fn_a();
+    }
     
     return 0;
 }

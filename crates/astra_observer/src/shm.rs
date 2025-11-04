@@ -1,30 +1,30 @@
 //! Creates a shared memory file to save the code coverage from the child processes
 //! 
-use std::ffi::CString;
+
 use std::os::raw::c_void;
 use rustix::fs::{ftruncate, Mode};
 use rustix::mm::{mmap, MapFlags, ProtFlags};
 use rustix::fd::OwnedFd;
-use rustix::{io, shm};
-use std::mem::size_of;
+use rustix::shm;
 use std::ptr::null_mut;
-use std::process::Command;
+
+const MAP_SIZE: usize = 262_144;
 
 pub fn create_shared_memory() -> (OwnedFd, *mut c_void, String) {
     println!("Initialization of shared memory.");
-    let shm_id = "ASTRA_SHM_IDBB";
+    let shm_id = "/astra_shm";
     let fd = shm::open(
         shm_id,
-        shm::OFlags::CREATE | shm::OFlags::EXCL | shm::OFlags::RDWR,
+        shm::OFlags::CREATE | shm::OFlags::RDWR,
         Mode::RUSR | Mode::WUSR,
     ).unwrap();
 
-    ftruncate(&fd, size_of::<u8>() as u64).unwrap();
+    ftruncate(&fd, MAP_SIZE as u64).unwrap();
 
     let ptr = unsafe {
         mmap(
             null_mut(),
-            size_of::<u8>(),
+            MAP_SIZE,
             ProtFlags::READ | ProtFlags::WRITE,
             MapFlags::SHARED,
             &fd,
@@ -39,7 +39,7 @@ pub fn create_shared_memory() -> (OwnedFd, *mut c_void, String) {
 }
 
 pub fn clean_shared_memory(ptr: *mut c_void, shm_id: &str) {
-    unsafe { rustix::mm::munmap(ptr, size_of::<u8>()) };
+    unsafe { rustix::mm::munmap(ptr, MAP_SIZE) };
     shm::unlink(shm_id).unwrap();
 
     println!("The memory was successfully cleaned");
