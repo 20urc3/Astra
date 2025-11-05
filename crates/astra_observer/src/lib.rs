@@ -1,2 +1,2 @@
-pub mod coverage_map;
+pub mod coverage;
 pub mod shm;

@@ -2,15 +2,15 @@
 #include <string.h>
 
 void fn_a() {
-    printf("A indeed!");
+    printf("");
 }
 
 void fn_b() {
-    printf("B indeed!");
+    printf("");
 }
 
 void fn_c() {
-    printf("C indeed!");
+    printf("");
 }
 
 int main(int argc, char **argv) {
@@ -47,6 +47,10 @@ int main(int argc, char **argv) {
     }
 
     if (buffer[1] == 'A') {
+        fn_a();
+    }
+    
+    if (buffer[2] == 'A') {
         fn_a();
     }
     
