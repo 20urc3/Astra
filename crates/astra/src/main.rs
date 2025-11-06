@@ -1,6 +1,7 @@
 use astra_cli::*;
 use astra_linker::*;
 use astra_observer::{coverage::*, shm::*};
+use astra_collector::*;
 
 use clap::Parser;
 use std::os::fd::AsRawFd;
@@ -9,10 +10,15 @@ use std::process::Command;
 const MAP_SIZE: usize = 262_144;
 
 fn main() {
+    // Parsing arguments
     let args = Args::parse();
     println!("You passed the program to test: {:?}", args.program);
-    println!("Attempting to link the target program with astra_sancov library");
 
+    // Collect the corpus
+    let corpus = collect_corpus(args.input_folder);
+
+    // Linking custom sancov to target program
+    println!("Attempting to link the target program with astra_sancov library");
     linking_target_to_sancov(args.program);
 
     // Create the shared memory file
@@ -75,8 +81,10 @@ fn main() {
     if flags.new_edge { println!("[NEW_EDGE] - The edge_map contains new edge(s)."); }
     if flags.new_hit  { println!("[NEW_HIT] - The hit-count of some edge has increased."); }
 
+    // Print stats
     println!("\nThe global map coverage is:");
     print_edge_found(&global_map);
 
+    // Clean shared memory
     clean_shared_memory(ptr, shm_id.as_str());
 }

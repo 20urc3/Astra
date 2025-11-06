@@ -64,6 +64,7 @@ version = "0.0.1"
 dependencies = [
  "anyhow",
  "astra_cli",
+ "astra_collector",
  "astra_linker",
  "astra_observer",
  "clap",
@@ -76,6 +77,10 @@ version = "0.0.1"
 dependencies = [
  "clap",
 ]
+
+[[package]]
+name = "astra_collector"
+version = "0.0.1"
 
 [[package]]
 name = "astra_linker"

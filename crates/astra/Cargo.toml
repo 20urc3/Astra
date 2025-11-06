@@ -9,6 +9,7 @@ anyhow = "1.0.100"
 astra_cli = { path = "../astra_cli" }
 astra_linker = { path = "../astra_linker" }
 astra_observer = { path = "../astra_observer" }
+astra_collector = { path = "../astra_collector" }
 
 clap = { version = "4.5.51", features = ["derive"] }
 nix = { version = "0.30.1", features = ["fs"] }
