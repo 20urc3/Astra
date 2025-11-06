@@ -2,6 +2,7 @@ use astra_cli::*;
 use astra_linker::*;
 use astra_observer::{coverage::*, shm::*};
 use astra_collector::*;
+use astra_scheduler::{mutation_queue::*, testcase_queue::*};
 
 use clap::Parser;
 use std::os::fd::AsRawFd;
@@ -16,6 +17,10 @@ fn main() {
 
     // Collect the corpus
     let corpus = collect_corpus(args.input_folder);
+
+    // Create the queues
+    let tqueue = TQueue::new();
+    let mutation_queue= MutationQueue::new();
 
     // Linking custom sancov to target program
     println!("Attempting to link the target program with astra_sancov library");

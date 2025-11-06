@@ -6,7 +6,8 @@ members = [
     "crates/astra_sancov",
     "crates/astra_linker", 
     "crates/astra_observer", 
-    "crates/astra_collector",
+    "crates/astra_collector", 
+    "crates/astra_scheduler",
 ]
 
 default-members = [
@@ -16,6 +17,7 @@ default-members = [
     "crates/astra_linker",
     "crates/astra_observer",
     "crates/astra_collector",
+    "crates/astra_scheduler",
     
 ]
 
@@ -35,6 +37,7 @@ astra_sancov = { path = "./crates/astra_sancov" }
 astra_linker = { path = "./crates/astra_linker" }
 astra_observer = { path = "./crates/astra_observer" }
 astra_collector = { path = "./crates/astra_collector" }
+astra_scheduler = { path = "./crates/astra_scheduler" }
 
 [profile.release]
 lto = true

@@ -67,6 +67,7 @@ dependencies = [
  "astra_collector",
  "astra_linker",
  "astra_observer",
+ "astra_scheduler",
  "clap",
  "nix",
 ]
@@ -102,6 +103,10 @@ dependencies = [
  "libc",
  "rustix",
 ]
+
+[[package]]
+name = "astra_scheduler"
+version = "0.0.1"
 
 [[package]]
 name = "bitflags"
