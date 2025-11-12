@@ -1,10 +1,9 @@
 use std::path::PathBuf;
 use std::process::Command;
 
-pub fn linking_target_to_sancov(target_path: PathBuf) {
-    let target = target_path.into_os_string().into_string().unwrap();
+pub fn linking_target_to_sancov(target_path: &PathBuf) {
     let mut child = Command::new("clang-20")
-        .arg(target)
+        .arg(target_path)
         .args([
             "-Wl,--whole-archive,--allow-multiple-definition", 
             "./target/release/libastra_sancov.a", 

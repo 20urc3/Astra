@@ -11,6 +11,7 @@ astra_linker = { path = "../astra_linker" }
 astra_observer = { path = "../astra_observer" }
 astra_collector = { path = "../astra_collector" }
 astra_scheduler = { path = "../astra_scheduler" }
+astra_worker = { path = "../astra_worker" }
 
 clap = { version = "4.5.51", features = ["derive"] }
 nix = { version = "0.30.1", features = ["fs"] }

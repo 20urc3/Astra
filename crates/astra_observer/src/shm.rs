@@ -10,11 +10,14 @@ use std::ptr::null_mut;
 
 const MAP_SIZE: usize = 262_144;
 
-pub fn create_shared_memory() -> (OwnedFd, *mut c_void, String) {
-    println!("Initialization of shared memory.");
-    let shm_id = "/astra_shm";
+pub fn create_shared_memory(thr_id: u16) -> (OwnedFd, *mut c_void, String) {
+    //println!("Initialization of shared memory.");
+    let tid = thr_id.to_string();
+    let mut shm_id = "/childprocess_".to_owned();
+    shm_id.push_str(&tid);
+
     let fd = shm::open(
-        shm_id,
+        &shm_id,
         shm::OFlags::CREATE | shm::OFlags::RDWR,
         Mode::RUSR | Mode::WUSR,
     ).unwrap();

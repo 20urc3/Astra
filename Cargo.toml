@@ -7,7 +7,8 @@ members = [
     "crates/astra_linker", 
     "crates/astra_observer", 
     "crates/astra_collector", 
-    "crates/astra_scheduler",
+    "crates/astra_scheduler", 
+    "crates/astra_worker",
 ]
 
 default-members = [
@@ -18,7 +19,7 @@ default-members = [
     "crates/astra_observer",
     "crates/astra_collector",
     "crates/astra_scheduler",
-    
+    "crates/astra_worker",
 ]
 
 [workspace.package]
@@ -38,6 +39,7 @@ astra_linker = { path = "./crates/astra_linker" }
 astra_observer = { path = "./crates/astra_observer" }
 astra_collector = { path = "./crates/astra_collector" }
 astra_scheduler = { path = "./crates/astra_scheduler" }
+astra_worker = { path = "./crates/astra_worker" }
 
 [profile.release]
 lto = true

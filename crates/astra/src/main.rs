@@ -4,30 +4,34 @@ use astra_observer::{coverage::*, shm::*};
 use astra_collector::*;
 use astra_scheduler::{mutation_queue::*, testcase_queue::*};
 
+use astra_worker::worker::worker;
+use astra_worker::*;
 use clap::Parser;
 use std::os::fd::AsRawFd;
 use std::process::Command;
+use std::sync::Arc;
 
 const MAP_SIZE: usize = 262_144;
 
 fn main() {
     // Parsing arguments
     let args = Args::parse();
-    println!("You passed the program to test: {:?}", args.program);
-
-    // Collect the corpus
-    let corpus = collect_corpus(args.input_folder);
-
-    // Create the queues
-    let tqueue = TQueue::new();
-    let mutation_queue= MutationQueue::new();
+    println!("You passed the program to link: {:?}", args.program);
+    println!("You passed the program to test: {:?}", args.target);
 
     // Linking custom sancov to target program
     println!("Attempting to link the target program with astra_sancov library");
-    linking_target_to_sancov(args.program);
+    linking_target_to_sancov(&args.program);
+
+    // Initialize the shared objects to pass to threads
+    initiate_shared_objects(args.input_folder, &args.program);
+
+    let target_copy = Arc::new(args.target);
+    //running_workers(1, args.program);
+    worker(1, target_copy);
 
     // Create the shared memory file
-    let (fd, ptr, shm_id) = create_shared_memory();
+    /*let (fd, ptr, shm_id) = create_shared_memory();
     // Map the local edge_map with the shared memory edge_map
     let edge_map: &[u8] = unsafe { std::slice::from_raw_parts(ptr as *mut u8, MAP_SIZE) };
 
@@ -38,7 +42,7 @@ fn main() {
         .spawn()
         .expect("failed to run child process");
     child.wait().expect("child failed");
-
+    
     // Initiate global map with the value of the first edge map 
     let mut global_map = populate_global_map(edge_map);
 
@@ -91,5 +95,5 @@ fn main() {
     print_edge_found(&global_map);
 
     // Clean shared memory
-    clean_shared_memory(ptr, shm_id.as_str());
+    clean_shared_memory(ptr, shm_id.as_str());*/
 }
