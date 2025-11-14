@@ -35,7 +35,7 @@ pub fn create_shared_memory(thr_id: u16) -> (OwnedFd, *mut c_void, String) {
         ).unwrap()
     };
 
-    println!("The memory was successfully initialized");
+    //println!("The memory was successfully initialized");
 
     (fd, ptr, shm_id.to_string())
 
@@ -45,5 +45,5 @@ pub fn clean_shared_memory(ptr: *mut c_void, shm_id: &str) {
     unsafe { rustix::mm::munmap(ptr, MAP_SIZE) };
     shm::unlink(shm_id).unwrap();
 
-    println!("The memory was successfully cleaned");
+    //println!("The memory was successfully cleaned");
 }

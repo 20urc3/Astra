@@ -2,8 +2,15 @@ use std::collections::BTreeSet;
 use std::path::PathBuf;
 use std::fs;
 use std::sync::{Arc, Mutex};
+use std::sync::RwLock;
 
-pub fn collect_corpus(input_dir: &PathBuf) -> Arc<Mutex<Vec<Vec<u8>>>> {
+#[derive(Clone, Debug, PartialEq, Eq, Hash)]
+struct CorpusItem {
+    data: Vec<u8>,
+    is_interesting: bool,
+}
+
+pub fn collect_corpus(input_dir: &PathBuf) -> Vec<Vec<u8>> {
     let mut corpus_set = BTreeSet::new();
 
     for file in fs::read_dir(input_dir).unwrap() {
@@ -14,6 +21,6 @@ pub fn collect_corpus(input_dir: &PathBuf) -> Arc<Mutex<Vec<Vec<u8>>>> {
         }
     }
 
-    Arc::new(Mutex::new(corpus_set.into_iter().collect::<Vec<Vec<u8>>>()))
+    corpus_set.into_iter().collect::<Vec<Vec<u8>>>()
 
 }

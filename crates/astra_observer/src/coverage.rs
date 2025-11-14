@@ -1,11 +1,11 @@
-pub fn populate_global_map(edge_map: &[u8]) -> Vec<u8> {
-    edge_map.iter().map(|&hit| bucketize(hit)).collect()
+pub fn populate_from_map(previous_map: &[u8]) -> Vec<u8> {
+    previous_map.iter().map(|&hit| bucketize(hit)).collect()
 }
 
-pub fn print_edge_found(edge_map: &[u8]) {
-    for (idx, &edge_count) in edge_map.iter().enumerate() {
+pub fn print_map(map: &[u8]) {
+    for (idx, &edge_count) in map.iter().enumerate() {
         if edge_count != 0 {
-            println!("edge_map[{}] = {}", idx, edge_count);
+            println!("map[{}] = {}", idx, edge_count);
         }
     }
 }
@@ -38,27 +38,49 @@ pub struct CoverageFlags {
     pub new_hit: bool,
 }
 
-/// Compare a new edge map to the global map, updating global_map with any new coverage.
-pub fn compare_global_to_edge(edge_map: &[u8], global_map: &mut Vec<u8>) -> CoverageFlags {
-    let mut flags = CoverageFlags { new_edge: false, new_hit: false };
+/// Compare two maps and returns flag i
+/// if the next map is different than the previous one
+pub fn compare_maps(previous_map: &[u8], new_map: &[u8]) -> CoverageFlags {
+    let mut flags = CoverageFlags {
+        new_edge: false,
+        new_hit: false,
+    };
 
-    for (idx, &edge_count) in edge_map.iter().enumerate() {
-        if edge_count == 0 {
-            continue;
+    for (idx, &prev_hit) in previous_map.iter().enumerate() {
+        let new_hit = new_map[idx];
+
+        // Case 1: New edge discovered (was 0 before, now non-zero)
+        if prev_hit == 0 && new_hit > 0 {
+            flags.new_edge = true;
         }
 
-        let bucketed = bucketize(edge_count);
+        // Case 2: Edge seen before, but hitcount (bucketized) increased
+        let prev_bucket = bucketize(prev_hit);
+        let next_bucket = bucketize(new_hit);
 
-        if global_map[idx] == 0 {
-            println!("New edge found: {}", idx);
-            global_map[idx] = bucketed;
-            flags.new_edge = true;
-        } else if bucketed > global_map[idx] {
-            println!("New hit-count found: {} ({} -> {})", idx, global_map[idx], bucketed);
-            global_map[idx] = bucketed;
+        if prev_bucket < next_bucket {
             flags.new_hit = true;
+        }
+
+        // Optional early exit if both found
+        if flags.new_edge && flags.new_hit {
+            break;
         }
     }
 
     flags
+}
+
+/// Copies from a map to a map
+/// AFL style (bucketized)
+pub fn copy_map(from: &[u8], to: &mut Vec<u8>) {
+    if to.len() < from.len() {
+        to.resize(from.len(), 0);
+    }
+
+    for (i, &val) in from.iter().enumerate() {
+        if val > 0 {
+            to[i] = std::cmp::max(to[i], val);
+        }
+    }
 }
