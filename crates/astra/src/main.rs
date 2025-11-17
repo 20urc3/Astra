@@ -1,17 +1,7 @@
 use astra_cli::*;
 use astra_linker::*;
-use astra_observer::{coverage::*, shm::*};
-use astra_collector::*;
-use astra_scheduler::{mutation_queue::*, testcase_queue::*};
-
-use astra_worker::worker::worker;
 use astra_worker::*;
 use clap::Parser;
-use std::os::fd::AsRawFd;
-use std::process::Command;
-use std::sync::Arc;
-
-const MAP_SIZE: usize = 262_144;
 
 fn main() {
     // Parsing arguments

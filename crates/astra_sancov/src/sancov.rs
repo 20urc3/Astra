@@ -1,9 +1,6 @@
-use astra_observer::shm::*;
-use std::io;
 use libc::c_void;
 use std::ptr::null_mut;
 use rustix::{
-    fd::OwnedFd,
     fs::{Mode, ftruncate},
     mm::{MapFlags, ProtFlags, mmap},
     shm,
@@ -48,8 +45,8 @@ pub extern "C" fn __sanitizer_cov_trace_pc_guard_init(mut start: *mut u32, stop:
     static mut N: u32 = 1; 
     // Assert that the edge map isn't bigger than the shared memory.
     if (unsafe { stop.offset_from(start)}) > MAP_SIZE.try_into().unwrap() { return; };
-    unsafe { if (start == stop || *start != 0) { return; } };
-    while (start < stop) {
+    unsafe { if start == stop || *start != 0 { return; } };
+    while start < stop {
         unsafe {
             *start = N;
             N += 1;
@@ -65,7 +62,7 @@ pub extern "C" fn __sanitizer_cov_trace_pc_guard_init(mut start: *mut u32, stop:
 #[unsafe(no_mangle)]
 pub unsafe extern "C" fn __sanitizer_cov_trace_pc_guard(guard: *mut u32) -> () {
     let edge_map: &mut [u8] = unsafe { std::slice::from_raw_parts_mut(SHM_PTR as *mut u8, MAP_SIZE) };
-    let idx = (*guard as usize) % MAP_SIZE;
+    let idx = unsafe { (*guard as usize) % MAP_SIZE };
     edge_map[idx] = edge_map[idx].wrapping_add(1);
     //println!("Marked edge: {}", *guard);
 }

@@ -1,14 +1,6 @@
 use std::collections::BTreeSet;
 use std::path::PathBuf;
 use std::fs;
-use std::sync::{Arc, Mutex};
-use std::sync::RwLock;
-
-#[derive(Clone, Debug, PartialEq, Eq, Hash)]
-struct CorpusItem {
-    data: Vec<u8>,
-    is_interesting: bool,
-}
 
 pub fn collect_corpus(input_dir: &PathBuf) -> Vec<Vec<u8>> {
     let mut corpus_set = BTreeSet::new();

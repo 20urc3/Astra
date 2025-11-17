@@ -66,8 +66,10 @@ dependencies = [
  "astra_cli",
  "astra_collector",
  "astra_linker",
+ "astra_mutator",
  "astra_observer",
  "astra_scheduler",
+ "astra_tui",
  "astra_worker",
  "clap",
  "nix",
@@ -89,6 +91,10 @@ name = "astra_linker"
 version = "0.0.1"
 
 [[package]]
+name = "astra_mutator"
+version = "0.0.1"
+
+[[package]]
 name = "astra_observer"
 version = "0.0.1"
 dependencies = [
@@ -107,6 +113,10 @@ dependencies = [
 
 [[package]]
 name = "astra_scheduler"
+version = "0.0.1"
+
+[[package]]
+name = "astra_tui"
 version = "0.0.1"
 
 [[package]]

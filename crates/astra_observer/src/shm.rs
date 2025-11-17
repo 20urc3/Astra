@@ -42,7 +42,7 @@ pub fn create_shared_memory(thr_id: u16) -> (OwnedFd, *mut c_void, String) {
 }
 
 pub fn clean_shared_memory(ptr: *mut c_void, shm_id: &str) {
-    unsafe { rustix::mm::munmap(ptr, MAP_SIZE) };
+    unsafe { rustix::mm::munmap(ptr, MAP_SIZE).unwrap() };
     shm::unlink(shm_id).unwrap();
 
     //println!("The memory was successfully cleaned");
