@@ -8,7 +8,6 @@ use astra_observer::coverage::*;
 use crossbeam::channel::unbounded;
 use std::{
     thread, 
-    time::{Instant, Duration},
     path::PathBuf,
 };
 
