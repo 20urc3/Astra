@@ -127,6 +127,7 @@ name = "astra_worker"
 version = "0.0.1"
 dependencies = [
  "astra_collector",
+ "astra_mutator",
  "astra_observer",
  "astra_scheduler",
  "crossbeam",

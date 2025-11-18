@@ -7,6 +7,9 @@
 
 use rand::Rng;
 
+/// Type alias for the function pointer signature
+pub type MutatorFunction = fn(&mut Vec<u8>, u32, u8);
+
 /// Flips a random bit in a random byte, for the number of mutations passed
 pub fn bit_flip(input: &mut Vec<u8>, length: u32, mutations: u8) {
     let mut rng = rand::rng();

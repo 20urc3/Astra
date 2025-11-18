@@ -11,6 +11,7 @@
 //! - It returns input and new edge-map to the main process
 
 use astra_observer::shm::*;
+use astra_mutator::*;
 
 use std::path::PathBuf;
 use std::process::Command;
@@ -28,10 +29,12 @@ pub fn worker(
 {
     println!("worker {id} started");
     loop {
-        let input = match recv_input.recv() {
+        let mut input: Vec<u8> = match recv_input.recv() {
             Ok(t) => t,
             Err(_) => continue,
         };
+
+        random_havoc(&mut input);
 
         let (_, ptr, shm_id) = create_shared_memory(id);
         let edge_map = unsafe {
