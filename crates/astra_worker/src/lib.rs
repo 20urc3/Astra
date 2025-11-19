@@ -7,8 +7,10 @@ use astra_observer::coverage::*;
 
 const MAP_SIZE: usize = 262_144;
 
-use std::{collections::VecDeque, path::PathBuf, thread};
+use std::{path::PathBuf, thread};
 use crossbeam::channel::unbounded;
+
+/// Creates and run the worker pool
 
 pub fn running_workers(num_thr: u16, input_dir: PathBuf, target: PathBuf) {
     let (send_input, recv_input) = unbounded::<Vec<u8>>();
@@ -21,60 +23,32 @@ pub fn running_workers(num_thr: u16, input_dir: PathBuf, target: PathBuf) {
         thread::spawn(move || worker(id, target, recv_input, send_cov));
     }
 
-    let corpus = collect_corpus(&input_dir);
+    let mut corpus = collect_corpus(&input_dir);
     assert!(!corpus.is_empty());
 
-    let mut global_map: Vec<u8> = vec![0u8; MAP_SIZE];
-    let mut scheduler = Scheduler::new(corpus);
+    let mut global_map = vec![0u8; MAP_SIZE];
+    let mut favored_inputs: Vec<Vec<u8>> = Vec::new();
 
     loop {
-        let input = scheduler.next_input();
-        send_input.send(input.clone()).unwrap();
+        if let Some(input) = favored_inputs.pop() {
+            send_input.send(input.clone()).unwrap();
+        } else {
+            let mut corpus_clone = corpus.clone();
+            let input = corpus_clone.pop().unwrap();
+            send_input.send(input).unwrap();
+        }
 
         while let Ok((_, input, new_map)) = recv_cov.try_recv() {
-            let flags = compare_maps(global_map.as_slice(), new_map.as_slice());
-
+            let flags = compare_maps(&global_map, &new_map);
             if flags.new_edge || flags.new_hit {
-
                 println!("Global map is:");
                 print_map(&global_map);
                 copy_map(&new_map, &mut global_map);
-                scheduler.add_favored(input);
+                favored_inputs.push(input);
+
             } else {
-                scheduler.add_normal(input);
+                corpus.push(input);
             }
         }
-    }
-}
-
-struct Scheduler {
-    normal: VecDeque<Vec<u8>>,
-    favored: VecDeque<Vec<u8>>,
-}
-
-impl Scheduler {
-    fn new(corpus: Vec<Vec<u8>>) -> Self {
-        Self {
-            normal: corpus.into_iter().collect(),
-            favored: VecDeque::new(),
-        }
-    }
-
-    fn next_input(&mut self) -> Vec<u8> {
-        if let Some(f) = self.favored.pop_front() {
-            f
-        } else {
-            let inp = self.normal.pop_front().unwrap();
-            self.normal.push_back(inp.clone());
-            inp
-        }
-    }
-
-    fn add_favored(&mut self, input: Vec<u8>) {
-        self.favored.push_back(input);
-    }
-
-    fn add_normal(&mut self, input: Vec<u8>) {
-        self.normal.push_back(input);
     }
 }

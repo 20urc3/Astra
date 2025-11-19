@@ -68,7 +68,6 @@ dependencies = [
  "astra_linker",
  "astra_mutator",
  "astra_observer",
- "astra_scheduler",
  "astra_tui",
  "astra_worker",
  "clap",
@@ -115,10 +114,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "astra_scheduler"
-version = "0.0.1"
-
-[[package]]
 name = "astra_tui"
 version = "0.0.1"
 
@@ -129,7 +124,6 @@ dependencies = [
  "astra_collector",
  "astra_mutator",
  "astra_observer",
- "astra_scheduler",
  "crossbeam",
  "crossbeam-channel",
  "lazy_static",

@@ -7,7 +7,6 @@ edition = "2024"
 
 [dependencies]
 astra_observer = { path = "../astra_observer" }
-astra_scheduler = { path = "../astra_scheduler" }
 astra_collector = { path = "../astra_collector" }
 astra_mutator = { path = "../astra_mutator" }
 

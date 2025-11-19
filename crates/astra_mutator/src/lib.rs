@@ -5,7 +5,6 @@ use rand::Rng;
 
 pub fn random_havoc(input: &mut Vec<u8>) {
     let input_length = input.len() as u32;
-    let mutations_count: u8 = 16;
 
     let functions: Vec<MutatorFunction> = vec![
         bit_flip, bytes_swap, bytes_insert, bytes_delete, bytes_inc,
@@ -17,5 +16,9 @@ pub fn random_havoc(input: &mut Vec<u8>) {
     let mut rng = rand::rng();
     let function_index = rng.random_range(0..num_functions);
 
-    functions[function_index](input, input_length, mutations_count);
+    let mut rng = rand::rng();
+    //let num_mut = rng.random_range(0..=255);
+    //for _ in 0..num_mut {
+        functions[function_index](input, input_length);
+    //}
 }

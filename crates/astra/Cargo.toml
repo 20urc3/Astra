@@ -10,7 +10,6 @@ astra_cli = { path = "../astra_cli" }
 astra_linker = { path = "../astra_linker" }
 astra_observer = { path = "../astra_observer" }
 astra_collector = { path = "../astra_collector" }
-astra_scheduler = { path = "../astra_scheduler" }
 astra_worker = { path = "../astra_worker" }
 astra_mutator = { path = "../astra_mutator" }
 astra_tui = { path = "../astra_tui" }
