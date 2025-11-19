@@ -16,7 +16,7 @@ pub fn bit_flip(input: &mut Vec<u8>, length: u32, mutations: u8) {
 
     for _ in 0..mutations {
         let byte_index = rng.random_range(0..length) as usize;
-        let bit_index = rng.random_range(0..length) as usize;
+        let bit_index = rng.random_range(0..8) as usize;
 
         input[byte_index] ^= 1 << bit_index; 
     }
@@ -40,9 +40,9 @@ pub fn bytes_insert(input: &mut Vec<u8>,  length: u32, mutations: u8) {
 
     for _ in 0..mutations {
         let byte_index = rng.random_range(0..length) as usize;
-        let random_byte: u8 = rng.random_range(0..255);
+        let random_byte: u8 = rng.random_range(0..=255);
         
-        input[byte_index] = random_byte;
+        input.insert(byte_index, random_byte);
     }
 
 }
@@ -98,7 +98,7 @@ pub fn bytes_rand(input: &mut Vec<u8>,  length: u32, mutations: u8) {
 
     for _ in 0..mutations {
         let byte_index = rng.random_range(0..length) as usize;
-        input[byte_index] = rng.random_range(0..255) as u8;
+        input[byte_index] = rng.random_range(0..=255) as u8;
     }
 }
 
@@ -109,23 +109,23 @@ pub fn bytes_copy(input: &mut Vec<u8>, length: u32, mutations: u8) {
     for _ in 0..mutations {
         let byte_index = rng.random_range(0..length) as usize;
         let byte_copy = input[byte_index];
-        input.insert(byte_index, byte_copy);
+        input.insert(byte_index +1, byte_copy);
     }
 }
 
 /// Expand the input by a random byte for a number of mutations passed
 pub fn bytes_expand(input: &mut Vec<u8>, length: u32, mutations: u8) {
-    if length < 10000000 { // Max 10 mb input
+    if length < 10_000_000 { // Max 10 mb input
         let mut rng = rand::rng();
 
         for _ in 0..mutations {
-            let random_byte = rng.random_range(0..255) as u8;
+            let random_byte = rng.random_range(0..=255) as u8;
             input.push(random_byte);
         }
     }
 }
 
-/// Shrinks the inpyt by a byte, for the number of mutations passed
+/// Shrinks the input by a byte, for the number of mutations passed
 pub fn byte_shrink(input: &mut Vec<u8>,  length: u32, mutations: u8) {
     if length > 39 { // Since we pass maximum 16 mutations this allows to never have smaller than 23 bytes input
     for _ in 0..mutations {
