@@ -12,6 +12,7 @@
 
 use astra_observer::shm::*;
 use astra_mutator::*;
+use astra_monitor::*;
 
 use std::path::PathBuf;
 use std::process::Command;
@@ -33,11 +34,9 @@ pub fn worker(
     
     println!("worker {id} started");
     loop {
-        let original = recv_input.recv().unwrap();
+        let mut input = recv_input.recv().unwrap();
 
-        // mutate a copy, not the original
-        let mut mutated = original.clone();
-        random_havoc(&mut mutated);
+        random_havoc(&mut input);
 
         let (_, ptr, shm_id) = create_shared_memory(id);
         let edge_map = unsafe {
@@ -46,18 +45,29 @@ pub fn worker(
         edge_map.fill(0);
 
         let tmp = std::env::temp_dir().join(format!("input_{id}.tmp"));
-        std::fs::write(&tmp, &mutated).unwrap();
+        std::fs::write(&tmp, &input).unwrap();
 
-        Command::new(&target)
+        let status = Command::new(&target)
             .arg(&tmp)
             .env("ASTRA_THR_ID", id.to_string())
-            .spawn()
-            .unwrap()
-            .wait()
-            .unwrap();
+            .status()
+            .expect("Failed to run the target");
 
+        match status.code() {
+            Some(code) =>  {
+                match code {
+                    0 => {} 
+                    _ => { 
+                        println!("A crash has been detect! Saving the input.");
+                        record_crash(input.clone());
+                    }
+                }
+            }
+            None => println!("Process terminated by user signal")
+        }
+        
         let local_copy = edge_map.to_vec();
-        send_cov.send((id, mutated, local_copy)).unwrap();
+        send_cov.send((id, input, local_copy)).unwrap();
         clean_shared_memory(ptr, shm_id.as_str());
     }
 }

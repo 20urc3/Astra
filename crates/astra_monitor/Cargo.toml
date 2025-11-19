@@ -1,0 +1,10 @@
+[package]
+name = "astra_monitor"
+version = "0.0.1"
+authors = ["Salim Largo <me@2ourc3.com>"]
+edition = "2024"
+
+
+[dependencies]
+sha = "1.0.3"
+sha256 = "1.6.0"
