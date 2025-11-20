@@ -10,6 +10,7 @@ astra_observer = { path = "../astra_observer" }
 astra_collector = { path = "../astra_collector" }
 astra_mutator = { path = "../astra_mutator" }
 astra_monitor = { path = "../astra_monitor" }
+astra_tui = { path = "../astra_tui" }
 
 lazy_static = "1.5.0"
 rand = "0.9.2"

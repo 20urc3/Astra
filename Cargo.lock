@@ -133,6 +133,7 @@ dependencies = [
  "astra_monitor",
  "astra_mutator",
  "astra_observer",
+ "astra_tui",
  "crossbeam",
  "crossbeam-channel",
  "lazy_static",

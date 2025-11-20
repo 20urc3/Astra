@@ -15,7 +15,7 @@ use astra_mutator::*;
 use astra_monitor::*;
 
 use std::path::PathBuf;
-use std::process::Command;
+use std::process::{Command, Stdio};
 use crossbeam::channel::Receiver;
 use crossbeam_channel::Sender;
 
@@ -26,12 +26,13 @@ pub fn worker(
     target: PathBuf,
     recv_input: Receiver<Vec<u8>>,
     send_cov: Sender<(u16, Vec<u8>, Vec<u8>)>,
+    send_finding: Sender<(bool)>,
 )
 {
     // Todo: The worker need to send the input to the main function
     // The main function then needs to check if the map is better or not
     // If yes it adds to interesting corpus if not it adds to normal corpus
-    
+    let mut finding = false;
     println!("worker {id} started");
     loop {
         let mut input = recv_input.recv().unwrap();
@@ -46,10 +47,12 @@ pub fn worker(
 
         let tmp = std::env::temp_dir().join(format!("input_{id}.tmp"));
         std::fs::write(&tmp, &input).unwrap();
+        
 
         let status = Command::new(&target)
             .arg(&tmp)
             .env("ASTRA_THR_ID", id.to_string())
+            .stdout(Stdio::piped())
             .status()
             .expect("Failed to run the target");
 
@@ -58,8 +61,9 @@ pub fn worker(
                 match code {
                     0 => {} 
                     _ => { 
-                        println!("A crash has been detect! Saving the input.");
                         record_crash(input.clone());
+                        finding = true;
+                        let _ = send_finding.send(finding);
                     }
                 }
             }
