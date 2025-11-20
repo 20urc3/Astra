@@ -6,3 +6,7 @@ edition = "2024"
 
 
 [dependencies]
+
+[[bin]]
+name = "astra_cxx"
+path = "src/lib.rs" 

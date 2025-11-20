@@ -16,8 +16,8 @@ pub struct Args {
     //#[arg(short='c', long="cores")]
     //cores: u16,
 
-    #[arg(short='t', long="target", help="target to fuzz")]
-    pub target: PathBuf,
+    //#[arg(short='t', long="target", help="target to fuzz")]
+    //pub target: PathBuf,
     
     #[arg(short='p', long="program", help="Program to fuzz.")]
     pub program: PathBuf,

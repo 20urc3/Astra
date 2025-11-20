@@ -6,7 +6,7 @@ if [ -z "$1" ]; then
     cargo build --release || { echo "Build failed"; exit 1; }
 
     # Find libsancov.a
-    LIB_PATH=$(find target/release -name "libastra_sancov.a" | head -n 1)
+    LIB_PATH=$(find target/release -name "libastra_sancov.so" | head -n 1)
 
     if [ -z "$LIB_PATH" ]; then
         echo "libsancov.a not found"
@@ -38,10 +38,21 @@ sudo cp "$LIBRARY_PATH" "$INSTALL_PATH" && echo "Library installed successfully!
     exit 1
 }
 
-# Install the astra binary so the user can call it from any shell
-cargo install --path crates/astra|| {
+# refreshing ldconfig
+sudo ldconfig || {
+    echo "Failed to refresh LDCONFIG"
+    exit1
+}
+
+# Install binaries
+cargo install --path crates/astra || {
     echo "Failed to install astra binary"
     exit 1
 }
 
-echo "Astra installed successfully!"
+cargo install --path crates/astra_cc || {
+    echo "Failed to install astra_cc"
+    exit1
+}
+
+echo "Astra and dependencies are installed successfully!"

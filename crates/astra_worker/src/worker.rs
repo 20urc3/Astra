@@ -51,8 +51,10 @@ pub fn worker(
 
         let status = Command::new(&target)
             .arg(&tmp)
+            .arg("-D")
             .env("ASTRA_THR_ID", id.to_string())
-            .stdout(Stdio::piped())
+            .stdout(Stdio::null())
+            .stderr(Stdio::null())
             .status()
             .expect("Failed to run the target");
 
@@ -60,7 +62,8 @@ pub fn worker(
             Some(code) =>  {
                 match code {
                     0 => {} 
-                    _ => { 
+                    _ => {}
+                    11 => { 
                         record_crash(input.clone());
                         finding = true;
                         let _ = send_finding.send(finding);
