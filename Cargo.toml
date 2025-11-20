@@ -10,7 +10,9 @@ members = [
     "crates/astra_worker", 
     "crates/astra_mutator", 
     "crates/astra_tui", 
-    "crates/astra_monitor",
+    "crates/astra_monitor", 
+    "crates/astra_cc", 
+    "crates/astra_cxx",
 ]
 
 default-members = [
@@ -24,6 +26,8 @@ default-members = [
     "crates/astra_mutator", 
     "crates/astra_tui",
     "crates/astra_monitor",
+    "crates/astra_cc", 
+    "crates/astra_cxx",
 ]
 
 [workspace.dependencies]
@@ -38,6 +42,8 @@ astra_worker = { path = "./crates/astra_worker" }
 astra_mutator = { path = "./crates/astra_mutator" }
 astra_tui = { path = "./crates/astra_tui" }
 astra_monitor = { path = "./crates/astra_monitor" }
+astra_cc = { path = "./crates/astra_cc" }
+astra_cxx = { path = "./crates/astra_cxx" }
 
 [workspace.package]
 name = "Astra"

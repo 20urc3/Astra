@@ -63,8 +63,10 @@ name = "astra"
 version = "0.0.1"
 dependencies = [
  "anyhow",
+ "astra_cc",
  "astra_cli",
  "astra_collector",
+ "astra_cxx",
  "astra_linker",
  "astra_mutator",
  "astra_observer",
@@ -75,6 +77,10 @@ dependencies = [
 ]
 
 [[package]]
+name = "astra_cc"
+version = "0.0.1"
+
+[[package]]
 name = "astra_cli"
 version = "0.0.1"
 dependencies = [
@@ -83,6 +89,10 @@ dependencies = [
 
 [[package]]
 name = "astra_collector"
+version = "0.0.1"
+
+[[package]]
+name = "astra_cxx"
 version = "0.0.1"
 
 [[package]]

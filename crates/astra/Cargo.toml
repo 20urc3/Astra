@@ -13,6 +13,8 @@ astra_collector = { path = "../astra_collector" }
 astra_worker = { path = "../astra_worker" }
 astra_mutator = { path = "../astra_mutator" }
 astra_tui = { path = "../astra_tui" }
+astra_cc = { path = "../astra_cc" }
+astra_cxx = { path = "../astra_cxx" }
 
 clap = { version = "4.5.51", features = ["derive"] }
 nix = { version = "0.30.1", features = ["fs"] }

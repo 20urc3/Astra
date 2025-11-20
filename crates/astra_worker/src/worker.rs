@@ -26,7 +26,7 @@ pub fn worker(
     target: PathBuf,
     recv_input: Receiver<Vec<u8>>,
     send_cov: Sender<(u16, Vec<u8>, Vec<u8>)>,
-    send_finding: Sender<(bool)>,
+    send_finding: Sender<bool>,
 )
 {
     // Todo: The worker need to send the input to the main function

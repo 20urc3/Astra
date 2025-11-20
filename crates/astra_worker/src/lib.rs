@@ -16,7 +16,7 @@ use crossbeam::channel::unbounded;
 pub fn running_workers(num_thr: u16, input_dir: PathBuf, target: PathBuf) {
     let (send_input, recv_input) = unbounded::<Vec<u8>>();
     let (send_cov, recv_cov) = unbounded::<(u16, Vec<u8>, Vec<u8>)>();
-    let (send_finding, recv_finding) = unbounded::<(bool)>();
+    let (send_finding, recv_finding) = unbounded::<bool>();
 
     for id in 0..num_thr {
         let recv_input = recv_input.clone();
@@ -66,7 +66,7 @@ pub fn running_workers(num_thr: u16, input_dir: PathBuf, target: PathBuf) {
 
         }
         
-        while let Ok((finding)) = recv_finding.try_recv() {
+        while let Ok(finding) = recv_finding.try_recv() {
             fuzz_stats.tot_crash += 1;
         
         }
