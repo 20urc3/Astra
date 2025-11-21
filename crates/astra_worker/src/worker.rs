@@ -24,6 +24,7 @@ const MAP_SIZE: usize = 262_144;
 pub fn worker(
     id: u16,
     target: PathBuf,
+    arguments: Vec<String>,
     recv_input: Receiver<Vec<u8>>,
     send_cov: Sender<(u16, Vec<u8>, Vec<u8>)>,
     send_finding: Sender<bool>,
@@ -51,7 +52,7 @@ pub fn worker(
 
         let status = Command::new(&target)
             .arg(&tmp)
-            .arg("-D")
+            .args(&arguments)
             .env("ASTRA_THR_ID", id.to_string())
             .stdout(Stdio::null())
             .stderr(Stdio::null())

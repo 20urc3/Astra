@@ -3,11 +3,12 @@ name = "astra"
 version = "0.0.1"
 authors = ["Salim Largo <me@2ourc3.com>"]
 edition = "2024"
+default-run = "astra"
+
 
 [dependencies]
 anyhow = "1.0.100"
 astra_cli = { path = "../astra_cli" }
-astra_linker = { path = "../astra_linker" }
 astra_observer = { path = "../astra_observer" }
 astra_collector = { path = "../astra_collector" }
 astra_worker = { path = "../astra_worker" }

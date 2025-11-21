@@ -4,7 +4,6 @@ members = [
     "crates/astra",
     "crates/astra_cli", 
     "crates/astra_sancov",
-    "crates/astra_linker", 
     "crates/astra_observer", 
     "crates/astra_collector", 
     "crates/astra_worker", 
@@ -19,7 +18,6 @@ default-members = [
     "crates/astra",
     "crates/astra_cli",
     "crates/astra_sancov",
-    "crates/astra_linker",
     "crates/astra_observer",
     "crates/astra_collector",
     "crates/astra_worker",
@@ -35,7 +33,6 @@ default-members = [
 astra = { path = "./crates/astra" }
 astra_cli = { path = "./crates/astra_cli" }
 astra_sancov = { path = "./crates/astra_sancov" }
-astra_linker = { path = "./crates/astra_linker" }
 astra_observer = { path = "./crates/astra_observer" }
 astra_collector = { path = "./crates/astra_collector" }
 astra_worker = { path = "./crates/astra_worker" }
@@ -52,6 +49,7 @@ edition = "2024"
 license = "MIT"
 readme = "./README.md"
 authors = ["Salim Largo <me@2ourc3.com>"]
+
 
 [profile.release]
 lto = true

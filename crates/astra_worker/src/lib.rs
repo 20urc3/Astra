@@ -8,12 +8,12 @@ use astra_tui::*;
 
 const MAP_SIZE: usize = 262_144;
 
-use std::{path::PathBuf, thread};
+use std::{fmt::Arguments, path::PathBuf, thread};
 use crossbeam::channel::unbounded;
 
 /// Creates and run the worker pool
 
-pub fn running_workers(num_thr: u16, input_dir: PathBuf, target: PathBuf) {
+pub fn running_workers(num_thr: u16, input_dir: PathBuf, target: PathBuf, arguments: Vec<String>) {
     let (send_input, recv_input) = unbounded::<Vec<u8>>();
     let (send_cov, recv_cov) = unbounded::<(u16, Vec<u8>, Vec<u8>)>();
     let (send_finding, recv_finding) = unbounded::<bool>();
@@ -23,7 +23,8 @@ pub fn running_workers(num_thr: u16, input_dir: PathBuf, target: PathBuf) {
         let send_cov = send_cov.clone();
         let send_finding = send_finding.clone();
         let target = target.clone();
-        thread::spawn(move || worker(id, target, recv_input, send_cov, send_finding));
+        let arguments = arguments.clone();
+        thread::spawn(move || worker(id, target, arguments, recv_input, send_cov, send_finding));
     }
 
     let mut corpus = collect_corpus(&input_dir);

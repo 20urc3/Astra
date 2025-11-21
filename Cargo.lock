@@ -67,7 +67,6 @@ dependencies = [
  "astra_cli",
  "astra_collector",
  "astra_cxx",
- "astra_linker",
  "astra_mutator",
  "astra_observer",
  "astra_tui",
@@ -93,10 +92,6 @@ version = "0.0.1"
 
 [[package]]
 name = "astra_cxx"
-version = "0.0.1"
-
-[[package]]
-name = "astra_linker"
 version = "0.0.1"
 
 [[package]]
