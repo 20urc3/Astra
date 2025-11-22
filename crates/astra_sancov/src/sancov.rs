@@ -18,9 +18,8 @@ const MAP_SIZE: usize = 262_144;
 #[unsafe(no_mangle)]
 pub extern "C" fn __sanitizer_cov_trace_pc_guard_init(mut start: *mut u32, stop: *mut u32) -> () {
     
-
     // If not running under the fuzzer (e.g. during ./configure) just NO-OP.
-    let shm_name = match std::env::var("ASTRA_SHM_NAME") {
+    let shm_name = match std::env::var("ASTRA_SHM_ID") {
         Ok(s) => s,
         Err(_) => return,
     };
@@ -69,13 +68,12 @@ pub extern "C" fn __sanitizer_cov_trace_pc_guard_init(mut start: *mut u32, stop:
 /// and keeps count of the number of time an edge is seen.
 #[unsafe(no_mangle)]
 pub unsafe extern "C" fn __sanitizer_cov_trace_pc_guard(guard: *mut u32) -> () {
-    // If no shared memory mapped (e.g. ./configure), just return.
-    if SHM_PTR.is_null() || guard.is_null() {
+    // If no shared memory mapped (e.g. ./configure),nm -a binutils/objdump | grep sanitizer just return.
+    if SHM_PTR.is_null() {
         return;
     }
     
     let edge_map: &mut [u8] = unsafe { std::slice::from_raw_parts_mut(SHM_PTR as *mut u8, MAP_SIZE) };
     let idx = unsafe { (*guard as usize) % MAP_SIZE };
     edge_map[idx] = edge_map[idx].wrapping_add(1);
-    //println!("Marked edge: {}", *guard);
 }

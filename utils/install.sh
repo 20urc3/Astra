@@ -6,7 +6,7 @@ if [ -z "$1" ]; then
     cargo build --release || { echo "Build failed"; exit 1; }
 
     # Find libsancov.a
-    LIB_PATH=$(find target/release -name "libastra_sancov.so" | head -n 1)
+    LIB_PATH=$(find target/release -name "libastra_sancov.a" | head -n 1)
 
     if [ -z "$LIB_PATH" ]; then
         echo "libsancov.a not found"
@@ -52,6 +52,11 @@ cargo install --path crates/astra || {
 
 cargo install --path crates/astra_cc || {
     echo "Failed to install astra_cc"
+    exit1
+}
+
+cargo install --path crates/astra_cxx || {
+    echo "Failed to install astra_cxx"
     exit1
 }
 

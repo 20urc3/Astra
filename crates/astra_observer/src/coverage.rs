@@ -1,5 +1,7 @@
-pub fn populate_from_map(previous_map: &[u8]) -> Vec<u8> {
-    previous_map.iter().map(|&hit| bucketize(hit)).collect()
+pub fn copy_map(global_map: &mut Vec<u8>, new_map: &[u8]) {
+    global_map.iter_mut().zip(new_map.iter()).for_each(|(global, &new)| {
+        *global = (*global).max(new);
+    });
 }
 
 pub fn print_map(map: &[u8]) {
@@ -40,7 +42,7 @@ pub struct CoverageFlags {
 
 /// Compare two maps and returns flag i
 /// if the next map is different than the previous one
-pub fn compare_maps(previous_map: &[u8], new_map: &[u8]) -> CoverageFlags {
+pub fn compare_maps(previous_map: &Vec<u8>, new_map: &Vec<u8>) -> CoverageFlags {
     let mut flags = CoverageFlags {
         new_edge: false,
         new_hit: false,
@@ -48,13 +50,11 @@ pub fn compare_maps(previous_map: &[u8], new_map: &[u8]) -> CoverageFlags {
 
     for (idx, &prev_hit) in previous_map.iter().enumerate() {
         let new_hit = new_map[idx];
-
-        // Case 1: New edge discovered (was 0 before, now non-zero)
+        
         if prev_hit == 0 && new_hit > 0 {
             flags.new_edge = true;
         }
 
-        // Case 2: Edge seen before, but hitcount (bucketized) increased
         let prev_bucket = bucketize(prev_hit);
         let next_bucket = bucketize(new_hit);
 
@@ -62,25 +62,10 @@ pub fn compare_maps(previous_map: &[u8], new_map: &[u8]) -> CoverageFlags {
             flags.new_hit = true;
         }
 
-        // Optional early exit if both found
         if flags.new_edge && flags.new_hit {
             break;
         }
     }
 
     flags
-}
-
-/// Copies from a map to a map
-/// AFL style (bucketized)
-pub fn copy_map(from: &[u8], to: &mut Vec<u8>) {
-    if to.len() < from.len() {
-        to.resize(from.len(), 0);
-    }
-
-    for (i, &val) in from.iter().enumerate() {
-        if val > 0 {
-            to[i] = std::cmp::max(to[i], val);
-        }
-    }
 }

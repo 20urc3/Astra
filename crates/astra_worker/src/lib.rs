@@ -8,11 +8,10 @@ use astra_tui::*;
 
 const MAP_SIZE: usize = 262_144;
 
-use std::{fmt::Arguments, path::PathBuf, thread};
+use std::{path::PathBuf, thread};
 use crossbeam::channel::unbounded;
 
 /// Creates and run the worker pool
-
 pub fn running_workers(num_thr: u16, input_dir: PathBuf, target: PathBuf, arguments: Vec<String>) {
     let (send_input, recv_input) = unbounded::<Vec<u8>>();
     let (send_cov, recv_cov) = unbounded::<(u16, Vec<u8>, Vec<u8>)>();
@@ -46,20 +45,18 @@ pub fn running_workers(num_thr: u16, input_dir: PathBuf, target: PathBuf, argume
             send_input.send(input).unwrap();
         }
 
-        while let Ok((_, input, new_map)) = recv_cov.try_recv() {
-            let flags = compare_maps(&global_map, &new_map);
+        while let Ok((_, input, child_map)) = recv_cov.try_recv() {
+            let flags = compare_maps(&mut global_map, &child_map);
             if flags.new_edge || flags.new_hit {
-                println!("Global map is:");
-                print_map(&global_map);
-                copy_map(&new_map, &mut global_map);
                 favored_inputs.push(input);
                 fuzz_stats.tot_path += 1;
                 last_time_new_path = std::time::Instant::now();
 
             } else {
                 corpus.push(input);
-                
             }
+            
+            copy_map(&mut global_map, &child_map);
             fuzz_stats.tot_execution += 1.0;
             fuzz_stats.run_time = fuzz_stats.start_time.elapsed().as_secs_f64();
             fuzz_stats.exec_speed = fuzz_stats.tot_execution / fuzz_stats.run_time;
@@ -67,7 +64,7 @@ pub fn running_workers(num_thr: u16, input_dir: PathBuf, target: PathBuf, argume
 
         }
         
-        while let Ok(finding) = recv_finding.try_recv() {
+        while let Ok(_finding) = recv_finding.try_recv() {
             fuzz_stats.tot_crash += 1;
         
         }

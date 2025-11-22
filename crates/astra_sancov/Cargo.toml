@@ -10,4 +10,7 @@ libc = "0.2.177"
 rustix = { version = "1.1.2", features = ["fs", "mm", "shm"] }
 
 [lib]
-crate-type   = ["rlib", "cdylib"]
+crate-type   = ["rlib", "cdylib", "staticlib"]
+
+[build]
+rustflags = ["--emit=obj"]

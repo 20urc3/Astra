@@ -21,6 +21,7 @@ use crossbeam_channel::Sender;
 
 const MAP_SIZE: usize = 262_144;
 
+
 pub fn worker(
     id: u16,
     target: PathBuf,
@@ -30,11 +31,10 @@ pub fn worker(
     send_finding: Sender<bool>,
 )
 {
-    // Todo: The worker need to send the input to the main function
-    // The main function then needs to check if the map is better or not
-    // If yes it adds to interesting corpus if not it adds to normal corpus
+
     let mut finding = false;
     println!("worker {id} started");
+
     loop {
         let mut input = recv_input.recv().unwrap();
 
@@ -48,12 +48,16 @@ pub fn worker(
 
         let tmp = std::env::temp_dir().join(format!("input_{id}.tmp"));
         std::fs::write(&tmp, &input).unwrap();
-        
+        let mut args = arguments.clone();
+        for arg in args.iter_mut() {
+            if arg == "@@" {
+                *arg = tmp.clone().into_os_string().into_string().unwrap();
+            }
+        }
 
         let status = Command::new(&target)
-            .arg(&tmp)
-            .args(&arguments)
-            .env("ASTRA_THR_ID", id.to_string())
+            .args(&args)
+            .env("ASTRA_SHM_ID", &shm_id)
             .stdout(Stdio::null())
             .stderr(Stdio::null())
             .status()
@@ -73,7 +77,7 @@ pub fn worker(
             }
             None => println!("Process terminated by user signal")
         }
-        
+
         let local_copy = edge_map.to_vec();
         send_cov.send((id, input, local_copy)).unwrap();
         clean_shared_memory(ptr, shm_id.as_str());

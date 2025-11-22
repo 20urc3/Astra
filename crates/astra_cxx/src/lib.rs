@@ -1,22 +1,23 @@
-// astra_cxx.rs
 use std::env;
 use std::process::{Command, exit};
 
 fn main() {
-    let args: Vec<String> = env::args().skip(1).collect();
-    if args.is_empty() {
-        eprintln!("Usage: astra_cxx <args...>");
-        exit(1);
+    let mut args: Vec<String> = env::args().skip(1).collect();
+    let is_compilation = args.contains(&"-c".to_string());
+
+    if is_compilation {
+        args.push("-fsanitize-coverage=trace-pc-guard".into());
+    } else {
+        args.push("-fsanitize-coverage=trace-pc-guard".into());
+        args.push("-Wl,--whole-archive,--allow-multiple-definition".into());
+        args.push("/usr/lib/libastra_sancov.a".into());
+        args.push("-Wl,--no-whole-archive".into());
     }
 
-    let status = Command::new("clang++-20")
-        .args(&args)
-        .env("CXX", "clang++-20")
-        .env("LD", "clang-20")
-        .env("CXXFLAGS", "-fsanitize-coverage=trace-pc-guard -fsanitize=address")
-        .env("LDFLAGS", "-lastra_sancov -fsanitize=address")
+    let status = Command::new("clang-20")
+        .args(args)
         .status()
-        .expect("failed to execute clang++-20");
+        .expect("failed to compile!");
 
     exit(status.code().unwrap_or(1));
 }
