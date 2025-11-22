@@ -46,13 +46,17 @@ pub fn running_workers(num_thr: u16, input_dir: PathBuf, target: PathBuf, argume
         }
 
         while let Ok((_, input, child_map)) = recv_cov.try_recv() {
+            
             let flags = compare_maps(&mut global_map, &child_map);
+            
             if flags.new_edge || flags.new_hit {
+                //print_map(&global_map);
                 favored_inputs.push(input);
                 fuzz_stats.tot_path += 1;
                 last_time_new_path = std::time::Instant::now();
 
             } else {
+                //print_map(&global_map);
                 corpus.push(input);
             }
             
@@ -61,6 +65,8 @@ pub fn running_workers(num_thr: u16, input_dir: PathBuf, target: PathBuf, argume
             fuzz_stats.run_time = fuzz_stats.start_time.elapsed().as_secs_f64();
             fuzz_stats.exec_speed = fuzz_stats.tot_execution / fuzz_stats.run_time;
             fuzz_stats.t_since_last_path = last_time_new_path.elapsed().as_secs_f64();
+            fuzz_stats.raw_edges = count_raw_edges(&global_map);
+            fuzz_stats.raw_hits  = total_raw_hits(&global_map);
 
         }
         
@@ -72,10 +78,12 @@ pub fn running_workers(num_thr: u16, input_dir: PathBuf, target: PathBuf, argume
         
         if last_print_time.elapsed() >= std::time::Duration::new(1, 0) {
             println!(
-                "runtime: {:.0} secs | time since last find: {:.0} | total findings: {} | crash/timeout: {:?}/{:?}  | total exec: {:?} | exec/sec: {:.2}",
+                "runtime: {:.0} secs | time since last find: {:.0} | total findings: {} | tot edges/hit: {:?}/{:?} | crash/timeout: {:?}/{:?}  | total exec: {:?} | exec/sec: {:.2}",
                 fuzz_stats.run_time,
                 fuzz_stats.t_since_last_path,
                 fuzz_stats.tot_path,
+                fuzz_stats.raw_edges,
+                fuzz_stats.raw_hits,
                 fuzz_stats.tot_crash,
                 fuzz_stats.tot_tmout,
                 fuzz_stats.tot_execution,

@@ -11,6 +11,8 @@ pub struct FuzzingStats {
     pub tot_tmout: u32,
     pub tot_path: u32,
     pub exec_speed: f64,
+    pub raw_edges: usize,
+    pub raw_hits: usize,
 }
 
 impl FuzzingStats {
@@ -25,6 +27,8 @@ impl FuzzingStats {
         let tot_tmout: u32 = 0;
         let tot_path: u32 = 0;
         let exec_speed: f64 = 0.0;
+        let raw_edges = 0;
+        let raw_hits = 0;
 
         Self {
             start_time,
@@ -37,6 +41,8 @@ impl FuzzingStats {
             tot_tmout,
             tot_path,
             exec_speed,
+            raw_edges,
+            raw_hits,
         }
     }
 }

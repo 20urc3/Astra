@@ -69,3 +69,11 @@ pub fn compare_maps(previous_map: &Vec<u8>, new_map: &Vec<u8>) -> CoverageFlags 
 
     flags
 }
+
+pub fn count_raw_edges(map: &[u8]) -> usize {
+    map.iter().filter(|&&x| x > 0).count()
+}
+
+pub fn total_raw_hits(map: &[u8]) -> usize {
+    map.iter().map(|&x| x as usize).sum()
+}
