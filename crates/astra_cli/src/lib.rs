@@ -10,8 +10,8 @@ pub struct Args {
     #[arg(short='o', long="output", default_value="output", help="Specify the output folder where crashing or hanging inputs are saved.")]
     pub output_folder: PathBuf,
 
-    #[arg(short='t', long="timeout", default_value="5000", help="Specify the number of ms before considering the target program has timeout.")]
-    pub timeout: u16,
+    #[arg(short='t', long="timeout", default_value="10", help="Specify the number of ms before considering the target program has timeout.")]
+    pub timeout: u64,
 
     #[arg(short='c', long="cores", default_value="4", help="Specify the number of core used for parallel fuzzing.")]
     pub cores: u16,

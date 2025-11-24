@@ -8,5 +8,5 @@ fn main() {
     println!("You passed the program to link: {:?}", args.program);
 
     // Run workers
-    running_workers(10,args.input_folder, args.program, args.arguments);
+    running_workers(10,args.input_folder, args.timeout, args.program, args.arguments);
 }

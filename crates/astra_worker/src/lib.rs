@@ -12,18 +12,21 @@ use std::{path::PathBuf, thread};
 use crossbeam::channel::unbounded;
 
 /// Creates and run the worker pool
-pub fn running_workers(num_thr: u16, input_dir: PathBuf, target: PathBuf, arguments: Vec<String>) {
+pub fn running_workers(num_thr: u16, input_dir: PathBuf, timeout: u64, target: PathBuf, arguments: Vec<String>) {
     let (send_input, recv_input) = unbounded::<Vec<u8>>();
     let (send_cov, recv_cov) = unbounded::<(u16, Vec<u8>, Vec<u8>)>();
-    let (send_finding, recv_finding) = unbounded::<bool>();
+    let (send_crash, recv_crash) = unbounded::<bool>();
+    let (send_hang, recv_hang) = unbounded::<bool>();
 
     for id in 0..num_thr {
         let recv_input = recv_input.clone();
         let send_cov = send_cov.clone();
-        let send_finding = send_finding.clone();
+        let send_crash = send_crash.clone();
+        let send_hang = send_hang.clone();
         let target = target.clone();
         let arguments = arguments.clone();
-        thread::spawn(move || worker(id, target, arguments, recv_input, send_cov, send_finding));
+
+        thread::spawn(move || worker(id, target, timeout, arguments, recv_input, send_cov, send_crash, send_hang));
     }
 
     let mut corpus = collect_corpus(&input_dir);
@@ -68,9 +71,13 @@ pub fn running_workers(num_thr: u16, input_dir: PathBuf, target: PathBuf, argume
 
         }
         
-        while let Ok(_finding) = recv_finding.try_recv() {
+        while let Ok(_) = recv_crash.try_recv() {
             fuzz_stats.tot_crash += 1;
         
+        }
+
+        while let Ok(_) = recv_hang.try_recv() {
+            fuzz_stats.tot_tmout += 1;
         }
 
         

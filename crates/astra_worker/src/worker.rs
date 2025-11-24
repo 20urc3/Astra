@@ -18,6 +18,7 @@ use std::path::PathBuf;
 use std::process::{Command, Stdio};
 use crossbeam::channel::Receiver;
 use crossbeam_channel::Sender;
+use wait_timeout::ChildExt;
 
 const MAP_SIZE: usize = 262_144;
 
@@ -25,15 +26,19 @@ const MAP_SIZE: usize = 262_144;
 pub fn worker(
     id: u16,
     target: PathBuf,
+    timeout: u64,
     arguments: Vec<String>,
     recv_input: Receiver<Vec<u8>>,
     send_cov: Sender<(u16, Vec<u8>, Vec<u8>)>,
-    send_finding: Sender<bool>,
+    send_crash: Sender<bool>,
+    send_hang: Sender<bool>,
 )
 {
 
     let mut finding = false;
+    let mut hang = false;
     println!("worker {id} started");
+    let timeout_ms = std::time::Duration::from_millis(timeout);
 
     loop {
         let mut input = recv_input.recv().unwrap();
@@ -55,14 +60,26 @@ pub fn worker(
             }
         }
 
-        let status = Command::new(&target)
+        let mut child = Command::new(&target)
             .args(&args)
             .env("ASTRA_SHM_ID", &shm_id)
             .stdout(Stdio::null())
             .stderr(Stdio::null())
-            .status()
+            .spawn()
             .expect("Failed to run the target");
+        
+        let status_code = match child.wait_timeout(timeout_ms).unwrap() {
+            Some(status) => status.code(),
+                None => {
+                    child.kill().unwrap();
+                    hang = true;
+                    let _ = send_hang.send(hang);
+                    child.wait().unwrap().code()
 
+                }
+            };
+        
+        let status =  child.wait().unwrap();
         match status.code() {
             Some(code) =>  {
                 match code {
@@ -71,11 +88,11 @@ pub fn worker(
                     11 => { 
                         record_crash(input.clone());
                         finding = true;
-                        let _ = send_finding.send(finding);
+                        let _ = send_crash.send(finding);
                     }
                 }
             }
-            None => println!("Process terminated by user signal")
+            None => {}
         }
 
         let local_copy = edge_map.to_vec();
