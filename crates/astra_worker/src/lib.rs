@@ -50,13 +50,11 @@ pub fn running_workers(num_thr: u16, input_dir: PathBuf, target: PathBuf, argume
             let flags = compare_maps(&mut global_map, &child_map);
             
             if flags.new_edge || flags.new_hit {
-                //print_map(&global_map);
                 favored_inputs.push(input);
                 fuzz_stats.tot_path += 1;
                 last_time_new_path = std::time::Instant::now();
 
             } else {
-                //print_map(&global_map);
                 corpus.push(input);
             }
             
