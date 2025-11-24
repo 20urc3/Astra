@@ -19,3 +19,5 @@ astra_cxx = { path = "../astra_cxx" }
 
 clap = { version = "4.5.51", features = ["derive"] }
 nix = { version = "0.30.1", features = ["fs"] }
+colored_text = "0.3.0"
+chrono = "0.4.42"

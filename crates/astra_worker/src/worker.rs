@@ -13,12 +13,15 @@
 use astra_observer::shm::*;
 use astra_mutator::*;
 use astra_monitor::*;
+use astra_tui::log_info;
 
 use std::path::PathBuf;
 use std::process::{Command, Stdio};
 use crossbeam::channel::Receiver;
 use crossbeam_channel::Sender;
 use wait_timeout::ChildExt;
+use colored_text::Colorize;
+use chrono;
 
 const MAP_SIZE: usize = 262_144;
 
@@ -37,8 +40,10 @@ pub fn worker(
 
     let mut finding = false;
     let mut hang = false;
-    println!("worker {id} started");
+    log_info!("Astra-worker", "The worker {id} has started");
     let timeout_ms = std::time::Duration::from_millis(timeout);
+
+    let mut args = arguments.clone();
 
     loop {
         let mut input = recv_input.recv().unwrap();
@@ -53,7 +58,6 @@ pub fn worker(
 
         let tmp = std::env::temp_dir().join(format!("input_{id}.tmp"));
         std::fs::write(&tmp, &input).unwrap();
-        let mut args = arguments.clone();
         for arg in args.iter_mut() {
             if arg == "@@" {
                 *arg = tmp.clone().into_os_string().into_string().unwrap();

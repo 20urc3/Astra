@@ -1,3 +1,5 @@
+mod log_macro;
+
 use std::time::Instant;
 
 pub struct FuzzingStats {

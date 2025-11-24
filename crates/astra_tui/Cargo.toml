@@ -4,4 +4,8 @@ version = "0.0.1"
 authors = ["Salim Largo <me@2ourc3.com>"]
 edition = "2024"
 
+[dependencies]
+chrono = "0.4.42"
+colored_text = "0.3.0"
+
 

@@ -10,6 +10,8 @@ const MAP_SIZE: usize = 262_144;
 
 use std::{path::PathBuf, thread};
 use crossbeam::channel::unbounded;
+use colored_text::Colorize;
+use chrono;
 
 /// Creates and run the worker pool
 pub fn running_workers(num_thr: u16, input_dir: PathBuf, timeout: u64, target: PathBuf, arguments: Vec<String>) {
@@ -82,8 +84,8 @@ pub fn running_workers(num_thr: u16, input_dir: PathBuf, timeout: u64, target: P
 
         
         if last_print_time.elapsed() >= std::time::Duration::new(1, 0) {
-            println!(
-                "runtime: {:.0} secs | time since last find: {:.0} | total findings: {} | tot edges/hit: {:?}/{:?} | crash/timeout: {:?}/{:?}  | total exec: {:?} | exec/sec: {:.2}",
+            log_info!(
+                "Astra-worker", "runtime: {:.0} secs | time since last find: {:.0} | total findings: {} | tot edges/hit: {:?}/{:?} | crash/timeout: {:?}/{:?}  | total exec: {:?} | exec/sec: {:.2}",
                 fuzz_stats.run_time,
                 fuzz_stats.t_since_last_path,
                 fuzz_stats.tot_path,
