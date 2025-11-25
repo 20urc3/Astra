@@ -16,9 +16,9 @@ pub fn random_havoc(input: &mut Vec<u8>) {
     let mut rng = rand::rng();
     let function_index = rng.random_range(0..num_functions);
 
-    //let mut rng = rand::rng();
-    //let num_mut = rng.random_range(0..=255);
-    //for _ in 0..num_mut {
+    let mut rng = rand::rng();
+    let num_mut = rng.random_range(0..=255);
+    for _ in 0..num_mut {
         functions[function_index](input, input_length);
-    //}
+    }
 }

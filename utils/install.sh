@@ -45,7 +45,7 @@ sudo ldconfig || {
 }
 
 # Install binaries
-cargo install --path crates/astra || {
+cargo install --path crates/astra_fuzz || {
     echo "Failed to install astra binary"
     exit 1
 }

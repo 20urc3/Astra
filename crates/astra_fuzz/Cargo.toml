@@ -1,9 +1,9 @@
 [package]
-name = "astra"
+name = "astra_fuzz"
 version = "0.0.1"
 authors = ["Salim Largo <me@2ourc3.com>"]
 edition = "2024"
-default-run = "astra"
+default-run = "astra_fuzz"
 
 
 [dependencies]

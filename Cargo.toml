@@ -1,7 +1,7 @@
 [workspace] 
 resolver = "2"
 members = [
-    "crates/astra",
+    "crates/astra_fuzz",
     "crates/astra_cli", 
     "crates/astra_sancov",
     "crates/astra_observer", 
@@ -15,7 +15,7 @@ members = [
 ]
 
 default-members = [
-    "crates/astra",
+    "crates/astra_fuzz",
     "crates/astra_cli",
     "crates/astra_sancov",
     "crates/astra_observer",
@@ -30,7 +30,7 @@ default-members = [
 
 [workspace.dependencies]
 
-astra = { path = "./crates/astra" }
+astra = { path = "./crates/astra_fuzz" }
 astra_cli = { path = "./crates/astra_cli" }
 astra_sancov = { path = "./crates/astra_sancov" }
 astra_observer = { path = "./crates/astra_observer" }
