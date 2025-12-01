@@ -17,8 +17,7 @@ use astra_tui::log_info;
 
 use std::path::PathBuf;
 use std::process::{Command, Stdio};
-use crossbeam::channel::Receiver;
-use crossbeam_channel::Sender;
+use flume::{Receiver, Sender};
 use wait_timeout::ChildExt;
 use colored_text::Colorize;
 use chrono;
@@ -54,10 +53,10 @@ pub fn worker(
 
         random_havoc(&mut input);
 
-        /*let (_, ptr, shm_id) = create_shared_memory(id);
+        let (_, ptr, shm_id) = create_shared_memory(id);
         let edge_map = unsafe {
             std::slice::from_raw_parts_mut(ptr as *mut u8, MAP_SIZE)
-        };*/
+        };
 
         edge_map.fill(0);
 
@@ -106,7 +105,6 @@ pub fn worker(
 
         let local_copy = edge_map.to_vec();
         send_cov.send((id, input, local_copy)).unwrap();
-        //clean_shared_memory(ptr, shm_id.as_str());
+        clean_shared_memory(ptr, shm_id.as_str());
     }
-    clean_shared_memory(ptr, shm_id.as_str());
 }

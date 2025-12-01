@@ -9,7 +9,7 @@ use astra_tui::*;
 const MAP_SIZE: usize = 262_144;
 
 use std::{path::PathBuf, thread};
-use crossbeam::channel::unbounded;
+use flume::unbounded;
 use std::sync::atomic::Ordering;
 use colored_text::Colorize;
 use chrono;
