@@ -140,4 +140,5 @@ Astra is inspired by decades of fuzzing research and tooling:
 * AFL / AFL++
 * libFuzzer
 * LibAFL
+
 If you’re new to fuzzing internals: read those projects’ docs, then come back here and implement the missing pieces yourself :)
