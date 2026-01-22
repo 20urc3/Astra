@@ -1,6 +1,6 @@
-pub fn copy_map(global_map: &mut Vec<u8>, new_map: &[u8]) {
-    global_map.iter_mut().zip(new_map.iter()).for_each(|(global, &new)| {
-        *global = (*global).max(new);
+pub fn copy_map(dest_map: &mut Vec<u8>, src_map: &[u8]) {
+    dest_map.iter_mut().zip(src_map.iter()).for_each(|(dest, &src)| {
+        *dest = (*dest).max(src);
     });
 }
 

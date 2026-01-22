@@ -4,6 +4,7 @@ use worker::*;
 
 use astra_collector::collect_corpus;
 use astra_observer::coverage::*;
+use astra_scheduler::*;
 use astra_tui::*;
 
 const MAP_SIZE: usize = 262_144;
@@ -16,54 +17,61 @@ use chrono;
 
 /// Creates and run the worker pool
 pub fn running_workers(num_thr: u16, input_dir: PathBuf, timeout: u64, target: PathBuf, arguments: Vec<String>) {
-    let (send_input, recv_input) = unbounded::<Vec<u8>>();
     let (send_cov, recv_cov) = unbounded::<(u16, Vec<u8>, Vec<u8>)>();
     let (send_crash, recv_crash) = unbounded::<bool>();
     let (send_hang, recv_hang) = unbounded::<bool>();
 
-    let mut worker_handles = Vec::new();
-    for id in 0..num_thr {
-        let recv_input = recv_input.clone();
-        let send_cov = send_cov.clone();
-        let send_crash = send_crash.clone();
-        let send_hang = send_hang.clone();
-        let target = target.clone();
-        let arguments = arguments.clone();
-
-        worker_handles.push(thread::spawn(move || worker(id, target, timeout, arguments, recv_input, send_cov, send_crash, send_hang)));
+    // Initial the corpus queues with user seeds
+    let mut initial_corpus = collect_corpus(&input_dir);
+    assert!(!initial_corpus.is_empty());
+    let corpus = InputQueue::new();
+    for input in initial_corpus {
+        corpus.add_normal(input);
     }
 
-    let mut corpus = collect_corpus(&input_dir);
-    assert!(!corpus.is_empty());
-
+    // Prepare map and statistics
     let mut global_map = vec![0u8; MAP_SIZE];
-    let mut favored_inputs: Vec<Vec<u8>> = Vec::new();
-
     let fuzz_stats = FuzzingStats::new();
     let start_time_instant = std::time::Instant::now();
     let mut last_print_time = std::time::Instant::now();
     let mut last_time_new_path = std::time::Instant::now();
 
-    loop {
-        if let Some(input) = favored_inputs.pop() {
-            send_input.send(input.clone()).unwrap();
-        } else {
-            let mut corpus_clone = corpus.clone();
-            let input = corpus_clone.pop().unwrap();
-            send_input.send(input).unwrap();
+    let (args_before, args_after): (Vec<String>, Vec<String>) = {
+    if let Some(pos) = arguments.iter().position(|arg| arg == "@@") {
+        (arguments[..pos].to_vec(), arguments[pos+1..].to_vec())
+    } else {
+        (arguments.clone(), Vec::new())
         }
+    };
 
+    // Spawn the threads
+    let mut worker_handles = Vec::new();
+    for id in 0..num_thr {
+        let corpus = corpus.clone();
+        let send_cov = send_cov.clone();
+        let send_crash = send_crash.clone();
+        let send_hang = send_hang.clone();
+        let target = target.clone();
+        let args_before = args_before.clone(); 
+        let args_after = args_after.clone(); 
+
+        worker_handles.push(thread::spawn(move || {
+        worker(id, target, timeout, args_before, args_after, corpus, send_cov, send_crash, send_hang)}));
+    }
+
+    
+    loop {
         while let Ok((_, input, child_map)) = recv_cov.try_recv() {
             
             let flags = compare_maps(&mut global_map, &child_map);
             
             if flags.new_edge || flags.new_hit {
-                favored_inputs.push(input);
+                corpus.add_priority(input);
                 fuzz_stats.tot_path.fetch_add(1, Ordering::Relaxed);
                 last_time_new_path = std::time::Instant::now();
 
             } else {
-                corpus.push(input);
+                corpus.add_normal(input);
             }
             
             copy_map(&mut global_map, &child_map);
