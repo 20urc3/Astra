@@ -22,7 +22,8 @@ If you want battle-tested fuzzing in production, use AFL++ / LibAFL. If you want
 ### Build and Install
 An install script will compile and deploy the compiler wrapper on your machine simply run the command:
 - `$ ./utils/install.sh`
-(sudo privilege are required)
+
+(sudo privileges are required)
 
 ## Running Astra
 Astra fuzzes an external target binary (or harness) by repeatedly providing mutated inputs.
