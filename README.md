@@ -2,9 +2,9 @@
 
 **Astra** is a fuzzer written in Rust, built to explore how modern Unix-compatible fuzzers are designed internally (AFL++-style architecture, scheduling, coverage tracking, crash triage, and parallel workers). This project focuses on **clarity and hackability** over completeness: it’s meant to be read, modified, and extended.
 
-## Goals
+## Concept
 
-- Provide a clean, understandable fuzzing architecture in **pure Rust**
+Astra provide a clean, understandable fuzzing architecture in **pure Rust**
 - Support a **multi-worker** design (scales with cores)
 - Implement the core mechanics:
   - corpus management
@@ -29,12 +29,7 @@ An install script will compile and deploy the compiler wrapper on your machine s
 Astra fuzzes an external target binary (or harness) by repeatedly providing mutated inputs.
 A typical run looks like this:
 ```bash
-# Example (replace with your real target)
-./target/release/astra \
-  --target ./path/to/target_binary \
-  --input  ./corpus/seeds \
-  --output ./out \
-  --jobs   8
+astra --target ./path/to/target_binary --input  ./corpus --output ./out --jobs 8 -- [args] @@ [args]
 ```
 
 
@@ -47,3 +42,6 @@ The exact policy is meant to stay readable and easy to tweak.
   
 ## Credits
 Author: Salim LARGO (2ourc3)
+
+## License
+Licensed under Apache License, Version 2.0 
