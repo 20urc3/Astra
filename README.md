@@ -20,8 +20,8 @@ If you want battle-tested fuzzing in production, use AFL++ / LibAFL. If you want
 - Rust stable (`rustup` recommended)
 - A UNIX environment (or WSL2)
 ### Build and Install
-An install script will compile and deploy the compiler wrapper on your machine
-`$ ./utils/install.sh`
+An install script will compile and deploy the compiler wrapper on your machine simply run the command:
+- `$ ./utils/install.sh`
 (sudo privilege are required)
 
 ## Running Astra
