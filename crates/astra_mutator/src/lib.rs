@@ -7,8 +7,16 @@ pub fn random_havoc(input: &mut Vec<u8>) {
     let input_length = input.len() as u32;
 
     let functions: Vec<MutatorFunction> = vec![
-        bit_flip, bytes_swap, bytes_insert, bytes_delete, bytes_inc,
-        bytes_dec, bytes_neg, bytes_rand, bytes_copy, bytes_expand,
+        bit_flip,
+        bytes_swap,
+        bytes_insert,
+        bytes_delete,
+        bytes_inc,
+        bytes_dec,
+        bytes_neg,
+        bytes_rand,
+        bytes_copy,
+        bytes_expand,
         byte_shrink,
     ];
 

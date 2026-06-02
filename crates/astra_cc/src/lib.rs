@@ -7,8 +7,10 @@ fn main() {
 
     if is_compilation {
         args.push("-fsanitize-coverage=trace-pc-guard".into());
+        args.push("-fsanitize=address".into());
     } else {
         args.push("-fsanitize-coverage=trace-pc-guard".into());
+        args.push("-fsanitize=address".into());
         args.push("-Wl,--whole-archive,--allow-multiple-definition".into());
         args.push("/usr/lib/libastra_sancov.a".into());
         args.push("-Wl,--no-whole-archive".into());
