@@ -1,13 +1,13 @@
-use criterion::{criterion_group, criterion_main, Criterion, BenchmarkId};
-use std::hint::black_box;
+use criterion::{BenchmarkId, Criterion, criterion_group, criterion_main};
 use crossbeam::queue::SegQueue;
 use flume;
+use std::hint::black_box;
 use std::sync::Arc;
 use std::thread;
 
 fn segqueue_benchmark(c: &mut Criterion) {
     let mut group = c.benchmark_group("queue_comparison");
-    
+
     for num_threads in [12] {
         group.bench_with_input(
             BenchmarkId::new("SegQueue", num_threads),
@@ -18,7 +18,7 @@ fn segqueue_benchmark(c: &mut Criterion) {
                     for i in 0..100000 {
                         queue.push(i);
                     }
-                    
+
                     let handles: Vec<_> = (0..threads)
                         .map(|_| {
                             let q = queue.clone();
@@ -32,14 +32,14 @@ fn segqueue_benchmark(c: &mut Criterion) {
                             })
                         })
                         .collect();
-                    
+
                     for h in handles {
                         h.join().unwrap();
                     }
                 });
             },
         );
-        
+
         group.bench_with_input(
             BenchmarkId::new("Flume", num_threads),
             &num_threads,
@@ -49,7 +49,7 @@ fn segqueue_benchmark(c: &mut Criterion) {
                     for i in 0..100000 {
                         tx.send(i).unwrap();
                     }
-                    
+
                     let handles: Vec<_> = (0..threads)
                         .map(|_| {
                             let tx_clone = tx.clone();
@@ -64,7 +64,7 @@ fn segqueue_benchmark(c: &mut Criterion) {
                             })
                         })
                         .collect();
-                    
+
                     for h in handles {
                         h.join().unwrap();
                     }
@@ -72,7 +72,7 @@ fn segqueue_benchmark(c: &mut Criterion) {
             },
         );
     }
-    
+
     group.finish();
 }
 

@@ -3,15 +3,15 @@ mod log_macro;
 use std::sync::atomic::{AtomicU32, AtomicU64, AtomicUsize};
 
 pub struct FuzzingStats {
-    pub run_time: AtomicU64,     
-    pub tot_execution: AtomicU64,   
-    pub t_since_last_path: AtomicU64, 
+    pub run_time: AtomicU64,
+    pub tot_execution: AtomicU64,
+    pub t_since_last_path: AtomicU64,
     pub t_since_last_crash: AtomicU32,
     pub t_since_last_timeout: AtomicU32,
     pub tot_crash: AtomicU32,
     pub tot_tmout: AtomicU32,
     pub tot_path: AtomicU32,
-    pub exec_speed: AtomicU64,    
+    pub exec_speed: AtomicU64,
     pub raw_edges: AtomicUsize,
     pub raw_hits: AtomicUsize,
 }

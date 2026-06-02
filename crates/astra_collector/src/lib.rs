@@ -1,6 +1,6 @@
 use std::collections::BTreeSet;
-use std::path::PathBuf;
 use std::fs;
+use std::path::PathBuf;
 
 pub fn collect_corpus(input_dir: &PathBuf) -> Vec<Vec<u8>> {
     let mut corpus_set = BTreeSet::new();
@@ -14,5 +14,4 @@ pub fn collect_corpus(input_dir: &PathBuf) -> Vec<Vec<u8>> {
     }
 
     corpus_set.into_iter().collect::<Vec<Vec<u8>>>()
-
 }
