@@ -41,23 +41,23 @@ sudo cp "$LIBRARY_PATH" "$INSTALL_PATH" && echo "Library installed successfully!
 # refreshing ldconfig
 sudo ldconfig || {
     echo "Failed to refresh LDCONFIG"
-    exit1
+    exit 1
 }
 
 # Install binaries
-cargo install --path crates/astra_fuzz || {
+cargo install --path astra || {
     echo "Failed to install astra binary"
     exit 1
 }
 
-cargo install --path crates/astra_cc || {
+cargo install --path astra_cc || {
     echo "Failed to install astra_cc"
-    exit1
+    exit 1
 }
 
-cargo install --path crates/astra_cxx || {
+cargo install --path astra_cxx || {
     echo "Failed to install astra_cxx"
-    exit1
+    exit 1
 }
 
 echo "Astra and dependencies are installed successfully!"
