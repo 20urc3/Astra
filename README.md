@@ -15,7 +15,7 @@ An install script will compile and deploy the compiler wrapper on your machine s
 Astra fuzzes an external target binary (or harness) by repeatedly providing mutated inputs.
 A typical run looks like this:
 ```bash
-astra --target ./path/to/target_binary --input  ./corpus --output ./out --jobs 8 -- [args] @@ [args]
+astra --target ./path/to/target_binary --input  ./corpus --output ./out -c 8 -- [args] @@ [args]
 ```
 
 ## Credits
