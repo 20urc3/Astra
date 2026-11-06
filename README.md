@@ -1,19 +1,5 @@
 # ASTRA
-
-**Astra** is a fuzzer written in Rust, built to explore how modern Unix-compatible fuzzers are designed internally (AFL++-style architecture, scheduling, coverage tracking, crash triage, and parallel workers). This project focuses on **clarity and hackability** over completeness: it’s meant to be read, modified, and extended.
-
-## Concept
-
-Astra provide a clean, understandable fuzzing architecture in **pure Rust**
-- Support a **multi-worker** design (scales with cores)
-- Implement the core mechanics:
-  - corpus management
-  - mutation loop
-  - execution + timeouts
-  - crash / hang detection
-  - lightweight stats reporting
-
-If you want battle-tested fuzzing in production, use AFL++ / LibAFL. If you want to understand how fuzzers tick and build your own, this repo is for you.
+If you want battle-tested fuzzing in production, use AFL++ / LibAFL. If you want to understand how fuzzers work, tick and build your own, this repo is for you.
 
 ## Building and Installing
 ### Prerequisites
@@ -32,14 +18,6 @@ A typical run looks like this:
 astra --target ./path/to/target_binary --input  ./corpus --output ./out --jobs 8 -- [args] @@ [args]
 ```
 
-
-## What “interesting” means in Astra
-A mutated input is considered **interesting** when it increases global novelty, e.g.:
-* discovers new edges / coverage bytes
-* increases raw edge count or hits unseen transitions
-* (optionally) triggers a new signal like a new path bucket
-The exact policy is meant to stay readable and easy to tweak.
-  
 ## Credits
 Author: Salim LARGO (2ourc3)
 
