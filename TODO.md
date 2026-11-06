@@ -11,5 +11,4 @@
 ## New Features
 - Derive Dictionnaries from inputs
 - Support trimming
-- Support Seed selection
-- Support Power Schedule
+- Support Initial Seed selection
